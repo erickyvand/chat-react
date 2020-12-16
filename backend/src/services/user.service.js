@@ -1,8 +1,12 @@
 import User from '../models/user';
 
 class UserService {
-	static findAllUsers() {
-		return User.find();
+	static createUser(data) {
+		return User.create(data);
+	}
+
+	static findUserByProperty(property) {
+		return User.findOne(property);
 	}
 }
 
