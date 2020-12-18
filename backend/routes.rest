@@ -3,6 +3,23 @@ Content-Type: application/json
 
 {
   "fullName": "Adrian Pisco",
-  "email": "pisco123456@test.com",
+  "email": "pisco@test.com",
+  "password": "Pass1234?"
+}
+
+###
+
+POST http://localhost:4500/api/auth/email
+Content-Type: application/json
+
+{
+  "email": "Sebastian_Ritchie25@gmail.com"
+}
+
+###
+POST http://localhost:4500/api/auth/password?access=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IlNlYmFzdGlhbl9SaXRjaGllMjVAZ21haWwuY29tIiwiaWF0IjoxNjA4MzIyOTk2LCJleHAiOjE2MDg0MDkzOTZ9.Ume1iiep9cXgKyOEBrlz2l-vZSf9o6S7eIyNN2d0aBY
+Content-Type: application/json
+
+{
   "password": "Pass1234?"
 }
