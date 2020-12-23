@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { config } from 'dotenv';
 import cors from 'cors';
+import socket from 'socket.io';
 import routes from './routes';
 import ResponseService from './services/response.service';
 
@@ -22,6 +23,7 @@ const app = express();
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(express.static(`${__dirname}/public`));
 
 app.use('/', routes);
 app.get('/', (req, res) => {
@@ -35,8 +37,14 @@ app.use('/', (req, res) => {
 
 const port = 4500 || process.env.PORT;
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
 	console.log(`App listening on port ${port}`);
+});
+
+const io = socket(server);
+
+io.on('connection', socket => {
+	console.log('Made socket connection');
 });
 
 export default app;
