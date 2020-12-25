@@ -1,6 +1,7 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../../app';
+import { createChatMessage } from '../fixtures/chat.fixture';
 import { cleanAllTables } from '../fixtures/database.fixture';
 import {
 	createUser,
@@ -18,6 +19,7 @@ describe('/POST login by providing email', () => {
 	before(async () => {
 		await cleanAllTables();
 		await createUser();
+		await createChatMessage();
 	});
 	it('Should provide an email to proceed login', done => {
 		chai

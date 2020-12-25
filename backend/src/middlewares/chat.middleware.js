@@ -25,7 +25,6 @@ export const checkSelfUserAndIfExists = async (req, res, next) => {
 		ResponseService.setError(401, 'Can not send message to yourself');
 		return ResponseService.send(res);
 	}
-	req.user = user;
 	next();
 };
 
