@@ -1,21 +1,12 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../../app';
-import { cleanAllTables } from '../fixtures/database.fixture';
-import {
-	createUser,
-	userEmailExists,
-	userSignupInfo,
-} from '../fixtures/user.fixture';
+import { userEmailExists, userSignupInfo } from '../fixtures/user.fixture';
 
 chai.should();
 chai.use(chaiHttp);
 
 describe('/POST Signup a user', () => {
-	// before(async () => {
-	// 	await cleanAllTables();
-	// 	await createUser();
-	// });
 	it('Should signup a user on a successful information', done => {
 		chai
 			.request(app)
