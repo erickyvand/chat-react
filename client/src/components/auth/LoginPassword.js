@@ -9,42 +9,34 @@ import {
 	Spinner,
 } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
-import { emailService } from '../../services/authService';
+import { passwordService } from '../../services/authService';
 
-const LoginEmail = () => {
-	const [email, setEmail] = useState();
-	const [error, setError] = useState();
-	const [loading, setLoading] = useState(false);
-	const [token, setToken] = useState();
-	const [redirect, setRedirect] = useState(false);
-
-	let emailErr;
-	let emailSuccess;
-
-	if (email === '') {
-		emailErr = 'Email is not allowed to be empty';
-	} else if (
-		email !== undefined &&
-		!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-			email
-		)
-	) {
-		emailErr = 'Email must be a valid email';
-	} else if (email === undefined) {
-		emailSuccess = '';
-	} else {
-		emailSuccess = 'Email looks good';
+function LoginPassword() {
+	if (!sessionStorage.getItem('accessToken')) {
+		return <Redirect to='/email' />;
 	}
 
-	const handleChangeEmail = async e => {
-		setEmail(e.target.value);
+	const [password, setPassword] = useState();
+	const [error, setError] = useState();
+	const [loading, setLoading] = useState(false);
+	const [redirect, setRedirect] = useState(false);
 
-		try {
-			await emailService({ email: e.target.value });
-			setError('');
-		} catch (err) {
-			setError(err.response.data.message);
-		}
+	let passErr;
+	let passSuccess;
+
+	if (password === '') {
+		passErr = 'Password is not allowed to be empty';
+	} else if (password !== undefined && password.length < 6) {
+		passErr = 'Password length must be at least 6 characters long';
+	} else if (password === undefined) {
+		passSuccess = '';
+	} else {
+		passSuccess = 'Password looks good';
+	}
+
+	const handleChangePassword = e => {
+		setPassword(e.target.value);
+		setError('');
 	};
 
 	const handleSubmit = async e => {
@@ -52,45 +44,53 @@ const LoginEmail = () => {
 
 		setLoading(true);
 
-		const results = await emailService({ email });
-		console.log(results.data.data.token);
-		setToken(results.data.data.token);
-		setRedirect(true);
-		setLoading(false);
+		try {
+			const results = await passwordService({ password });
+			setLoading(false);
+			setRedirect(true);
+
+			sessionStorage.setItem('id', results.data.data.user._id);
+			sessionStorage.setItem('fullName', results.data.data.user.fullName);
+			sessionStorage.setItem('token', results.data.data.token);
+			sessionStorage.removeItem('accessToken');
+		} catch (err) {
+			setError(err.response.data.message);
+			setLoading(false);
+		}
 	};
 
 	if (redirect) {
-		sessionStorage.setItem('accessToken', token);
-		location.href = `/password?access=${token}`;
+		location.href = '/chat';
 	}
 
 	return (
 		<div>
-			<Container fluid='md'>
+			<Container>
 				<Row>
 					<Col xs={12} sm={12} md={6} style={{ margin: '250px auto' }}>
 						<Card>
 							<Card.Body>
-								<Card.Title>Insert your email to proceed login</Card.Title>
+								<Card.Title>Provide your password to login</Card.Title>
 								<Form onSubmit={handleSubmit}>
 									<Form.Group>
 										<Form.Control
-											type='text'
-											placeholder='Email'
+											type='password'
+											placeholder='Password'
+											value={password || ''}
 											className={
-												emailErr
+												passErr
 													? 'is-invalid'
 													: error
 													? 'is-invalid'
-													: emailSuccess
+													: passSuccess
 													? 'is-valid'
 													: ''
 											}
-											onChange={handleChangeEmail}
+											onChange={handleChangePassword}
 										/>
-										{emailErr ? (
+										{passErr ? (
 											<Form.Text className='invalid-feedback'>
-												{emailErr}
+												{passErr}
 											</Form.Text>
 										) : error ? (
 											<Form.Text className='invalid-feedback'>
@@ -98,14 +98,14 @@ const LoginEmail = () => {
 											</Form.Text>
 										) : (
 											<Form.Text className='valid-feedback'>
-												{emailSuccess}
+												{passSuccess}
 											</Form.Text>
 										)}
 									</Form.Group>
 									<Button
 										type='submit'
 										variant='primary'
-										disabled={!email || emailErr || error || loading}
+										disabled={!password || passErr || loading}
 									>
 										{loading ? (
 											<>
@@ -119,7 +119,7 @@ const LoginEmail = () => {
 												Loading...
 											</>
 										) : (
-											'Submit'
+											'Login'
 										)}
 									</Button>
 								</Form>
@@ -130,6 +130,6 @@ const LoginEmail = () => {
 			</Container>
 		</div>
 	);
-};
+}
 
-export default LoginEmail;
+export default LoginPassword;
