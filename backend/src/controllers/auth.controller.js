@@ -21,7 +21,10 @@ class AuthController {
 
 		const userData = { ...user._doc };
 		delete userData.password;
-		ResponseService.setSuccess(201, 'User successfully created', userData);
+		ResponseService.setSuccess(201, 'User successfully created', {
+			token: TokenService.generateToken(userData),
+			user: userData,
+		});
 		return ResponseService.send(res);
 	}
 

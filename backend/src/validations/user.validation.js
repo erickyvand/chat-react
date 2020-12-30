@@ -79,23 +79,10 @@ export const validatePasswordBody = (req, res, next) => {
 
 	const { error } = schema.validate(req.body);
 
-	if (!req.query.access) {
-		ResponseService.setError(401, 'Access denied, no email provided');
-		return ResponseService.send(res);
-	}
-
-	const { name } = TokenService.verifyToken(req.query.access);
-	if (name === 'JsonWebTokenError') {
-		ResponseService.setError(401, 'Invalid credentials');
-		return ResponseService.send(res);
-	}
-
 	if (error) {
 		const errors = error.details.map(err => err.message);
 		ResponseService.setError(400, errors);
 		return ResponseService.send(res);
 	}
-
-	req.accessData = TokenService.verifyToken(req.query.access);
 	next();
 };

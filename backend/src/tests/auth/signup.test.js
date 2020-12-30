@@ -19,10 +19,13 @@ describe('/POST Signup a user', () => {
 				res.body.message.should.equal('User successfully created');
 				res.body.should.have.property('data');
 				res.body.data.should.be.an('object');
-				res.body.data.should.have.a.property('_id');
-				res.body.data.should.have.a.property('fullName');
-				res.body.data.should.have.a.property('email');
-				res.body.data.should.have.a.property('createdAt');
+				res.body.data.should.have.a.property('token');
+				res.body.data.should.have.a.property('user');
+				res.body.data.user.should.be.an('object');
+				res.body.data.user.should.have.a.property('_id');
+				res.body.data.user.should.have.a.property('fullName');
+				res.body.data.user.should.have.a.property('email');
+				res.body.data.user.should.have.a.property('createdAt');
 				done();
 			});
 	});
