@@ -7,7 +7,6 @@ import {
 	Form,
 	Button,
 	Spinner,
-	Alert,
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { signupService } from '../../services/authService';
@@ -80,13 +79,12 @@ const Signup = () => {
 		try {
 			const results = await signupService({ fullName, email, password });
 
-			sessionStorage.setItem('id', results.data.data._id);
-			sessionStorage.setItem('fullName', results.data.data.fullName);
+			sessionStorage.setItem('id', results.data.data.user._id);
+			sessionStorage.setItem('fullName', results.data.data.user.fullName);
+			sessionStorage.setItem('token', results.data.data.token);
 
 			setLoading(false);
 			setRedirect(true);
-
-			console.log(results.data.data);
 		} catch (err) {
 			setError(err.response.data.message);
 			setLoading(false);
@@ -94,19 +92,17 @@ const Signup = () => {
 	};
 
 	if (redirect) {
-		location.replace('/chat');
+		location.href = '/chat';
 	}
 
 	return (
 		<div className='mt-4'>
 			<Container fluid='md'>
 				<Row>
-					<Col xs={12} sm={12} md={6}>
+					<Col xs={12} sm={12} md={6} style={{ margin: '200px auto' }}>
 						<Card>
 							<Card.Body>
 								<Card.Title>Signup Here</Card.Title>
-								{error && <Alert variant='danger'>{error}</Alert>}
-
 								<Form onSubmit={handleSubmit}>
 									<Form.Group>
 										<Form.Control
@@ -134,13 +130,23 @@ const Signup = () => {
 											placeholder='Email'
 											value={email || ''}
 											className={
-												emailErr ? 'is-invalid' : emailSuccess ? 'is-valid' : ''
+												emailErr
+													? 'is-invalid'
+													: error
+													? 'is-invalid'
+													: emailSuccess
+													? 'is-valid'
+													: ''
 											}
 											onChange={handleChangeEmail}
 										/>
 										{emailErr ? (
 											<Form.Text className='invalid-feedback'>
 												{emailErr}
+											</Form.Text>
+										) : error ? (
+											<Form.Text className='invalid-feedback'>
+												{error}
 											</Form.Text>
 										) : (
 											<Form.Text className='valid-feedback'>
