@@ -10,6 +10,7 @@ import {
 	validatePasswordBody,
 	validateSignupBody,
 } from '../validations/user.validation';
+import { protectRoute } from '../middlewares/protect-route.middleware';
 
 const router = express.Router();
 
@@ -27,6 +28,7 @@ router.post(
 );
 router.post(
 	'/password',
+	protectRoute,
 	validatePasswordBody,
 	checkIfPasswordsMatch,
 	AuthController.comparePasswordToLogin

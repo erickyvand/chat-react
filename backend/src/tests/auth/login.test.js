@@ -71,7 +71,8 @@ describe('/POST password to login', () => {
 	it('Should login and get token by providing a correct password', done => {
 		chai
 			.request(app)
-			.post(`/api/auth/password?access=${emailToken}`)
+			.post('/api/auth/password')
+			.set('Authorization', `Bearer ${emailToken}`)
 			.send(userPasswordLogin)
 			.end((err, res) => {
 				res.body.should.be.an('object');
@@ -86,25 +87,11 @@ describe('/POST password to login', () => {
 		done();
 	});
 
-	it('Should check if email has been provided', done => {
-		chai
-			.request(app)
-			.post('/api/auth/password')
-			.send()
-			.end((err, res) => {
-				res.body.should.be.an('object');
-				res.body.should.have.property('status');
-				res.status.should.equal(401);
-				res.body.should.have.property('message');
-				res.body.message.should.equal('Access denied, no email provided');
-			});
-		done();
-	});
-
 	it('Should validate password input field', done => {
 		chai
 			.request(app)
-			.post(`/api/auth/password?access=${emailToken}`)
+			.post('/api/auth/password')
+			.set('Authorization', `Bearer ${emailToken}`)
 			.send()
 			.end((err, res) => {
 				res.body.should.be.an('object');
@@ -115,25 +102,11 @@ describe('/POST password to login', () => {
 		done();
 	});
 
-	it('Should check if the provided email is valid', done => {
-		chai
-			.request(app)
-			.post('/api/auth/password?access=hhhhh')
-			.send()
-			.end((err, res) => {
-				res.body.should.be.an('object');
-				res.body.should.have.property('status');
-				res.status.should.equal(401);
-				res.body.should.have.property('message');
-				res.body.message.should.equal('Invalid credentials');
-			});
-		done();
-	});
-
 	it('Should check invalid password', done => {
 		chai
 			.request(app)
-			.post(`/api/auth/password?access=${emailToken}`)
+			.post('/api/auth/password')
+			.set('Authorization', `Bearer ${emailToken}`)
 			.send(wrongPassword)
 			.end((err, res) => {
 				res.body.should.be.an('object');

@@ -42,7 +42,7 @@ export const checkIfEmailExists = async (req, res, next) => {
  */
 export const checkIfPasswordsMatch = async (req, res, next) => {
 	const user = await UserService.findUserByProperty({
-		email: req.accessData.email,
+		email: req.userData.email,
 	});
 
 	const userData = { ...user._doc };
