@@ -21,6 +21,7 @@ router.get(
 	protectRoute,
 	checkChatParam,
 	ChatController.getSingleChatMessages
-);
+	);
+	router.get('/', protectRoute, ChatController.getAllChatMessages);
 
 export default router;

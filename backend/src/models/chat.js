@@ -4,6 +4,7 @@ const chatSchema = mongoose.Schema({
 	receiverId: {
 		type: String,
 		required: true,
+		ref: 'User',
 	},
 	message: {
 		type: String,

@@ -29,6 +29,23 @@ class ChatController {
 		ResponseService.setSuccess(200, 'The retrieved chat', req.chat);
 		return ResponseService.send(res);
 	}
+
+	static async getAllChatMessages(req, res) {
+		const sentMessages = await ChatService.findSentChatMessagesByProperty({
+			user: req.userData._id,
+		});
+
+		const receivedMessages = await ChatService.findReceivedChatMessagesByProperty(
+			{
+				receiverId: req.userData._id,
+			}
+		);
+		// console.log(sentMessages.concat(receivedMessages));
+		ResponseService.setSuccess(200, 'All chat messages', {
+			messages: sentMessages.concat(receivedMessages),
+		});
+		return ResponseService.send(res);
+	}
 }
 
 export default ChatController;
