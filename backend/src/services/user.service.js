@@ -2,7 +2,7 @@ import User from '../models/user';
 
 /**
  * User service class
-*/
+ */
 class UserService {
 	/**
 	 * * @param  {object} data
@@ -18,6 +18,14 @@ class UserService {
 	 */
 	static findUserByProperty(property) {
 		return User.findOne(property);
+	}
+
+	static findUsersExceptAuthUser(property) {
+		return User.find(property).sort({ fullName: 1 });
+	}
+
+	static searchUserByName(property) {
+		return User.find(property);
 	}
 }
 
