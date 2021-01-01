@@ -7,7 +7,7 @@ export const validateChatBody = (req, res, next) => {
 			'any.required': 'receiverId is required',
 			'string.empty': 'Receiver must not be empty',
 		}),
-		message: Joi.string().required().messages({
+		message: Joi.string().allow('').required().messages({
 			'any.required': 'message is required',
 			'string.empty': 'Message must not be empty',
 		}),

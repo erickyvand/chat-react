@@ -2,13 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Card, Col, Container, Row, Spinner } from 'react-bootstrap';
 import { userService } from '../../services/user.service';
+import { makeChatService } from '../../services/chatService';
 
 const ListUsers = () => {
 	const history = useHistory();
 	const [users, setUsers] = useState([]);
 	const [loading, setLoading] = useState(false);
 
-	const handleStartConversation = userId => {
+	const handleStartConversation = async userId => {
+		try {
+			const chat = await makeChatService({
+				receiverId: userId,
+				message: '',
+			});
+		} catch (error) {
+			console.log(error);
+		}
 		history.push(`/chat/${userId}`);
 	};
 

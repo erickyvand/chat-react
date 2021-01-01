@@ -18,3 +18,9 @@ body {
 .list-user-card:hover{
   background-color: #dbdadd;
 }
+
+.input-wrap {
+  width: 100%;
+  position: relative;
+  display: flex;
+}

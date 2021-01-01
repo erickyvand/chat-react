@@ -14,15 +14,23 @@ class ChatService {
 	}
 
 	static findSentChatMessagesByProperty(property) {
-		return Chat.find(property)
-			.sort({ createdAt: -1 })
-			.populate('receiverId', ['fullName', 'email', 'createdAt']);
+		return Chat.find(property).populate('receiverId', [
+			'fullName',
+			'email',
+			'createdAt',
+		]);
 	}
 
 	static findReceivedChatMessagesByProperty(property) {
-		return Chat.find(property)
-			.sort({ createdAt: -1 })
-			.populate('user', ['fullName', 'email', 'createdAt']);
+		return Chat.find(property).populate('user', [
+			'fullName',
+			'email',
+			'createdAt',
+		]);
+	}
+
+	static deleteMessageByProperty(property) {
+		return Chat.deleteMany(property);
 	}
 }
 

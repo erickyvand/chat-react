@@ -1,23 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { ListGroup, Spinner } from 'react-bootstrap';
-import { chatService } from '../../services/chatService';
+import { chatService, deleteEmptyChat } from '../../services/chatService';
 
-const ChatUsers = ({ searchResults }) => {
+const ChatUsers = ({ sendUserData }) => {
 	const history = useHistory();
 	const [messages, setMessages] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const [deletedMessage, setDeletedMessage] = useState();
 
-	const handleClickUser = userId => {
+	const handleClickUser = async userId => {
+		const deleted = await deleteEmptyChat();
+		setDeletedMessage(deleted.data.message);
 		history.push(`/chat/${userId}`);
 	};
+
+	const usersMap = messages.map(message => {
+		return {
+			id: message.user._id || message.receiverId._id,
+			fullName: message.user.fullName || message.receiverId.fullName,
+		};
+	});
+
+	let uniq = {};
+
+	const users = usersMap.filter(obj => !uniq[obj.id] && (uniq[obj.id] = true));
 
 	useEffect(async () => {
 		setLoading(true);
 		const results = await chatService();
 		setMessages(results.data.data.messages);
+		sendUserData(results.data.data.messages);
 		setLoading(false);
-	}, []);
+	}, [deletedMessage]);
 	return (
 		<div>
 			<ListGroup style={{ height: 600 }} className='overflow-auto'>
@@ -26,18 +41,16 @@ const ChatUsers = ({ searchResults }) => {
 						animation='grow'
 						style={{ margin: 'auto', width: 200, height: 200 }}
 					/>
-				) : messages.length === 0 ? (
+				) : users.length === 0 ? (
 					<p className='text-center'>No messages</p>
 				) : (
-					messages.map(message => (
+					users.map(user => (
 						<ListGroup.Item
-							key={message._id}
+							key={user.id}
 							action
-							onClick={() =>
-								handleClickUser(message.receiverId._id || message.user._id)
-							}
+							onClick={() => handleClickUser(user.id)}
 						>
-							{message.receiverId.fullName || message.user.fullName}
+							{user.fullName}
 						</ListGroup.Item>
 					))
 				)}
