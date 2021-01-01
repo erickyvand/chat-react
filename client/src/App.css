@@ -1,3 +1,20 @@
 body {
-  background-color:#42423e;
+	background-color: #42423e;
+}
+
+.border-radius {
+	border-radius: 25px 0px;
+}
+
+.color-users-title {
+	color: #f7f5fa;
+	text-decoration: underline;
+}
+
+.list-user-card {
+  cursor: pointer;
+}
+
+.list-user-card:hover{
+  background-color: #dbdadd;
 }
