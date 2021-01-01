@@ -8,7 +8,6 @@ import {
 	Row,
 	Spinner,
 } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
 import { emailService } from '../../services/authService';
 
 const LoginEmail = () => {

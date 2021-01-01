@@ -21,7 +21,18 @@ router.get(
 	protectRoute,
 	checkChatParam,
 	ChatController.getSingleChatMessages
-	);
-	router.get('/', protectRoute, ChatController.getAllChatMessages);
+);
+router.get('/', protectRoute, ChatController.getAllChatMessages);
+router.get('/:userId/send', protectRoute, ChatController.getAllSentMessages);
+router.get(
+	'/:userId/receive',
+	protectRoute,
+	ChatController.getAllReceivedMessages
+);
+router.delete(
+	'/',
+	protectRoute,
+	ChatController.deleteEmptyMessage
+);
 
 export default router;

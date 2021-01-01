@@ -92,7 +92,7 @@ const Signup = () => {
 	};
 
 	if (redirect) {
-		location.href = '/chat';
+		location.href = '/friends';
 	}
 
 	return (
