@@ -12,15 +12,19 @@ body {
 }
 
 .list-user-card {
-  cursor: pointer;
+	cursor: pointer;
 }
 
-.list-user-card:hover{
-  background-color: #dbdadd;
+.list-user-card:hover {
+	background-color: #dbdadd;
 }
 
 .input-wrap {
-  width: 100%;
-  position: relative;
-  display: flex;
+	width: 100%;
+	position: relative;
+	display: flex;
+}
+
+.chat-container-height {
+	height: 490px;
 }

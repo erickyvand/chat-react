@@ -17,6 +17,8 @@ class AuthController {
 			fullName: req.body.fullName,
 			email: req.body.email,
 			password: BcryptService.hashPassword(req.body.password),
+			createdAt: new Date(),
+			updatedAt: new Date(),
 		});
 
 		const userData = { ...user._doc };

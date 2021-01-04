@@ -22,12 +22,11 @@ router.get(
 	checkChatParam,
 	ChatController.getSingleChatMessages
 );
-router.get('/', protectRoute, ChatController.getAllChatMessages);
-router.get('/:userId/send', protectRoute, ChatController.getAllSentMessages);
+router.get('/', protectRoute, ChatController.getReceivedChatMessages);
 router.get(
-	'/:userId/receive',
+	'/:userId/thread',
 	protectRoute,
-	ChatController.getAllReceivedMessages
+	ChatController.getThreadChatMessages
 );
 router.delete(
 	'/',

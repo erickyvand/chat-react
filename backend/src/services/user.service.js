@@ -27,6 +27,10 @@ class UserService {
 	static searchUserByName(property) {
 		return User.find(property);
 	}
+
+	static updateUserByProperty(property, attribute) {
+		return User.updateOne(property, attribute);
+	}
 }
 
 export default UserService;
