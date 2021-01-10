@@ -1,10 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { IconButton, Tooltip } from '@material-ui/core';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { Card, Col, ListGroup, Row } from 'react-bootstrap';
+import { Card, Col, Row } from 'react-bootstrap';
 
-const Header = () => {
+const Header = ({ match }) => {
 	const handleLogout = () => {
 		sessionStorage.removeItem('id');
 		sessionStorage.removeItem('fullName');
@@ -22,6 +22,17 @@ const Header = () => {
 									<Card.Title className='text-white'>VandChat</Card.Title>
 								</Col>
 								<Col>
+									{match.path === '/friends' ? (
+										''
+									) : (
+										<h5>
+											<Link to='/friends' className='text-white'>
+												Find Friends
+											</Link>
+										</h5>
+									)}
+								</Col>
+								<Col>
 									<Card.Title className='float-right text-white'>
 										Welcome &nbsp;
 										{sessionStorage.getItem('fullName')}
@@ -33,15 +44,6 @@ const Header = () => {
 									</Card.Title>
 								</Col>
 							</Row>
-							<Row>
-								<Col>
-									<h5>
-										<Link to='/friends' className='text-white'>
-											Find Friends
-										</Link>
-									</h5>
-								</Col>
-							</Row>
 						</Card.Body>
 					</Card>
 				</Col>
@@ -50,4 +52,4 @@ const Header = () => {
 	);
 };
 
-export default Header;
+export default withRouter(Header);

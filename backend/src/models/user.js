@@ -13,10 +13,17 @@ const userSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
+	socket: {
+		type: String,
+		default: '',
+	},
 	createdAt: {
 		type: Date,
 		required: true,
-		default: new Date(),
+	},
+	updatedAt: {
+		type: Date,
+		required: true,
 	},
 });
 

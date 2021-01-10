@@ -14,6 +14,7 @@ class ChatController {
 		const chat = await ChatService.createChatMessage({
 			receiverId: req.body.receiverId,
 			message: req.body.message,
+			createdAt: new Date(),
 			user: req.userData._id,
 		});
 		ResponseService.setSuccess(201, 'Chat message has been created', chat);
@@ -30,61 +31,43 @@ class ChatController {
 		return ResponseService.send(res);
 	}
 
-	static async getAllChatMessages(req, res) {
-		const sentMessages = await ChatService.findSentChatMessagesByProperty({
-			user: req.userData._id,
-		}).sort({ createdAt: -1 });
-
+	static async getReceivedChatMessages(req, res) {
 		const receivedMessages = await ChatService.findReceivedChatMessagesByProperty(
 			{
 				receiverId: req.userData._id,
 			}
 		).sort({ createdAt: -1 });
-		ResponseService.setSuccess(200, 'All chat messages', {
-			messages: sentMessages.concat(receivedMessages),
+		ResponseService.setSuccess(200, 'All received chat messages', {
+			messages: receivedMessages,
 		});
 		return ResponseService.send(res);
 	}
 
-	static async getAllSentMessages(req, res) {
-		try {
-			const sentMessages = await ChatService.findSentChatMessagesByProperty({
-				user: req.userData._id,
-				receiverId: req.params.userId,
-				message: { $ne: '' },
-			});
-			ResponseService.setSuccess(200, 'All sent chat messages', sentMessages);
-			return ResponseService.send(res);
-		} catch (error) {
-			ResponseService.setError(
-				500,
-				'Argument passed in must be a single String of 12 bytes or a string of 24 hex characters'
-			);
-			return ResponseService.send(res);
-		}
-	}
+	static async getThreadChatMessages(req, res) {
+		const messages = await ChatService.findAllChatMessagesByProperty({
+			$or: [{ receiverId: req.userData._id }, { user: req.userData._id }],
+		});
 
-	static async getAllReceivedMessages(req, res) {
-		try {
-			const receivedMessages = await ChatService.findReceivedChatMessagesByProperty(
-				{
-					user: req.params.userId,
-					receiverId: req.userData._id,
-				}
-			);
-			ResponseService.setSuccess(
-				200,
-				'All Received chat messages',
-				receivedMessages
-			);
-			return ResponseService.send(res);
-		} catch (error) {
-			ResponseService.setError(
-				500,
-				'Argument passed in must be a single String of 12 bytes or a string of 24 hex characters'
-			);
-			return ResponseService.send(res);
-		}
+		const receiver = messages.map(message => {
+			return {
+				id: message.receiverId.id,
+				fullName: message.receiverId.fullName,
+				socket: message.receiverId.socket,
+				updatedAt: message.receiverId.updatedAt,
+			};
+		});
+		const sender = messages.map(message => {
+			return {
+				id: message.user.id,
+				fullName: message.user.fullName,
+				socket: message.user.socket,
+				updatedAt: message.user.updatedAt,
+			};
+		});
+		const threadMessages = sender.concat(receiver);
+
+		ResponseService.setSuccess(200, 'All thread chat messages', threadMessages);
+		return ResponseService.send(res);
 	}
 
 	static async deleteEmptyMessage(req, res) {

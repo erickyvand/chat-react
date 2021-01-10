@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { ListGroup, Spinner } from 'react-bootstrap';
-import { chatService, deleteEmptyChat } from '../../services/chatService';
+import { Badge, Col, ListGroup, Row, Spinner } from 'react-bootstrap';
+import moment from 'moment';
+import {
+	deleteEmptyChat,
+	threadChatMessagesService,
+} from '../../services/chatService';
 
-const ChatUsers = ({ sendUserData }) => {
+const ChatUsers = ({
+	updateComponentOnNewReceivedMessage,
+	setNotification,
+	notification,
+	setCount,
+	count,
+	receiverId,
+}) => {
 	const history = useHistory();
 	const [messages, setMessages] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -12,30 +23,38 @@ const ChatUsers = ({ sendUserData }) => {
 	const handleClickUser = async userId => {
 		const deleted = await deleteEmptyChat();
 		setDeletedMessage(deleted.data.message);
+
+		if (notification.user === userId) {
+			setNotification({});
+			setCount(0);
+		}
 		history.push(`/chat/${userId}`);
 	};
 
-	const usersMap = messages.map(message => {
-		return {
-			id: message.user._id || message.receiverId._id,
-			fullName: message.user.fullName || message.receiverId.fullName,
-		};
-	});
-
+	// remove duplicate in array of object
 	let uniq = {};
 
-	const users = usersMap.filter(obj => !uniq[obj.id] && (uniq[obj.id] = true));
+	const usersFilter = messages.filter(
+		obj => !uniq[obj.id] && (uniq[obj.id] = true) && uniq[obj.id]
+	);
 
+	const users = usersFilter.filter(
+		user => user.id !== sessionStorage.getItem('id')
+	);
+	console.log(users);
 	useEffect(async () => {
 		setLoading(true);
-		const results = await chatService();
-		setMessages(results.data.data.messages);
-		sendUserData(results.data.data.messages);
+
+		const response = await threadChatMessagesService(
+			sessionStorage.getItem('id')
+		);
+		setMessages(response.data.data);
+
 		setLoading(false);
-	}, [deletedMessage]);
+	}, [deletedMessage, updateComponentOnNewReceivedMessage]);
 	return (
 		<div>
-			<ListGroup style={{ height: 600 }} className='overflow-auto'>
+			<ListGroup className='overflow-auto chat-container-height'>
 				{loading ? (
 					<Spinner
 						animation='grow'
@@ -44,15 +63,59 @@ const ChatUsers = ({ sendUserData }) => {
 				) : users.length === 0 ? (
 					<p className='text-center'>No messages</p>
 				) : (
-					users.map(user => (
-						<ListGroup.Item
-							key={user.id}
-							action
-							onClick={() => handleClickUser(user.id)}
-						>
-							{user.fullName}
-						</ListGroup.Item>
-					))
+					users.map(user => {
+						if (notification.user === user.id) {
+							return (
+								<ListGroup.Item
+									key={user.id}
+									action
+									onClick={() => handleClickUser(user.id)}
+									className='bg-info text-white font-weight-bold'
+								>
+									<Row>
+										<Col md={10}>{user.fullName}</Col>
+										<Col>
+											<Badge variant='light'>{count}</Badge>
+										</Col>
+									</Row>
+								</ListGroup.Item>
+							);
+						} else if (user.id === receiverId) {
+							return (
+								<ListGroup.Item
+									key={user.id}
+									action
+									onClick={() => handleClickUser(user.id)}
+									className='bg-light font-weight-bold'
+								>
+									{user.fullName}
+								</ListGroup.Item>
+							);
+						} else {
+							return (
+								<ListGroup.Item
+									key={user.id}
+									action
+									onClick={() => handleClickUser(user.id)}
+								>
+									{user.fullName}
+									{' - '}
+									{user.socket !== '' ? (
+										<small>
+											<Badge variant='success'>online</Badge>
+										</small>
+									) : (
+										<small className='text-secondary'>
+											{moment(user.updatedAt).calendar({
+												sameDay: `[${moment(user.updatedAt).fromNow()}]`,
+												sameElse: '',
+											})}
+										</small>
+									)}
+								</ListGroup.Item>
+							);
+						}
+					})
 				)}
 			</ListGroup>
 		</div>

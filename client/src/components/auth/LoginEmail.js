@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	Button,
 	Card,
@@ -62,6 +62,10 @@ const LoginEmail = () => {
 		sessionStorage.setItem('accessToken', token);
 		location.href = `/password?access=${token}`;
 	}
+
+	useEffect(() => {
+		document.title = 'VandChat | Login';
+	}, []);
 
 	return (
 		<div>

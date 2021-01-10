@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
 	ClickAwayListener,
 	IconButton,
@@ -10,6 +10,7 @@ import {
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker } from 'emoji-mart';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
+import { makeChatService } from '../../services/chatService';
 
 const useStyles = makeStyles(() => ({
 	notchedOutline: {
@@ -27,17 +28,25 @@ const useStyles = makeStyles(() => ({
 		borderRadius: '0 20px 20px 0',
 	},
 }));
-const SendChatMessage = () => {
+const SendChatMessage = ({
+	message,
+	setMessage,
+	sendMessage,
+	allowNextLine,
+	handleChange,
+}) => {
 	const classes = useStyles();
 
 	const [open, setOpen] = useState(false);
 	const anchorRef = useRef(null);
 
-	const handleChange = e => {
-		setComment(e.target.value);
+	const addEmoji = e => {
+		if (message === undefined) {
+			setMessage(e.native);
+		} else {
+			setMessage(message + e.native);
+		}
 	};
-
-	const addEmoji = e => {};
 
 	const handleToggle = () => {
 		setOpen(prevOpen => !prevOpen);
@@ -57,15 +66,19 @@ const SendChatMessage = () => {
 				<TextField
 					variant='outlined'
 					fullWidth
+					autoFocus
 					size='small'
-					multiline
+					multiline={allowNextLine}
 					rowsMax={4}
+					value={message === undefined ? '' : message}
 					InputProps={{
 						classes: {
 							notchedOutline: classes.notchedOutline,
 						},
 					}}
 					placeholder='Type a message...'
+					onKeyDown={sendMessage}
+					onChange={handleChange}
 				/>
 				<IconButton
 					ref={anchorRef}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	Button,
 	Card,
@@ -62,6 +62,11 @@ function LoginPassword() {
 	if (redirect) {
 		location.href = '/friends';
 	}
+
+
+	useEffect(() => {
+		document.title = 'VandChat | Login';
+	}, []);
 
 	return (
 		<div>

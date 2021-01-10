@@ -29,6 +29,25 @@ class ChatService {
 		]);
 	}
 
+	static findAllChatMessagesByProperty(property) {
+		return Chat.find(property)
+			.sort({ createdAt: -1 })
+			.populate('receiverId', [
+				'fullName',
+				'email',
+				'socket',
+				'createdAt',
+				'updatedAt',
+			])
+			.populate('user', [
+				'fullName',
+				'email',
+				'socket',
+				'createdAt',
+				'updatedAt',
+			]);
+	}
+
 	static deleteMessageByProperty(property) {
 		return Chat.deleteMany(property);
 	}
