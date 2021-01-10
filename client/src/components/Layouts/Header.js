@@ -18,7 +18,7 @@ const Header = ({ match }) => {
 					<Card className='bg-info'>
 						<Card.Body>
 							<Row>
-								<Col>
+								<Col xs={12} sm={12} md={4}>
 									<Card.Title className='text-white'>VandChat</Card.Title>
 								</Col>
 								<Col>
@@ -32,7 +32,7 @@ const Header = ({ match }) => {
 										</h5>
 									)}
 								</Col>
-								<Col>
+								<Col xs={12} sm={12} md={6}>
 									<Card.Title className='float-right text-white'>
 										Welcome &nbsp;
 										{sessionStorage.getItem('fullName')}

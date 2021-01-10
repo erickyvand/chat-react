@@ -124,6 +124,7 @@ function App() {
 							socket={socket}
 							connectedUsers={connectedUsers}
 							loading={loading}
+							setLoading={setLoading}
 							allUsers={users}
 							setNotification={setNotification}
 							notification={notification}
