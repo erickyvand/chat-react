@@ -7,6 +7,7 @@ import SendChatMessage from './SendChatMessage';
 import SearchUser from '../users/SearchUser';
 import Header from '../Layouts/Header';
 import ChatUsers from './ChatUsers';
+import SearchChatUser from '../users/SearchChatUser';
 
 const Chat = ({
 	match,
@@ -27,15 +28,14 @@ const Chat = ({
 	const userId = match.params.userId;
 	const [message, setMessage] = useState('');
 	const [allowNextLine, setAllowNextLine] = useState(false);
+	const [chatUsers, setChatUsers] = useState([]);
+	const [chatResults, setChatResults] = useState([]);
+	const [diplayResults, setDiplayResults] = useState(false);
 
 	let user;
 	if (users.length > 0) {
 		user = users.find(u => u._id === userId);
 	}
-
-	const getDataFromChild = data => {
-		setUserData(data);
-	};
 
 	const sendMessage = async e => {
 		if (e.keyCode === 13 && !e.shiftKey) {
@@ -64,6 +64,27 @@ const Chat = ({
 		}
 	};
 
+	const getData = data => {
+		setChatResults(data);
+	};
+
+	const handleSearchUser = e => {
+		if (chatResults.length > 0) {
+			const res = chatResults.filter(
+				user =>
+					user.fullName.toLowerCase().indexOf(e.target.value.toLowerCase()) !==
+					-1
+			);
+			setChatUsers(res);
+		}
+
+		if (e.target.value !== '') {
+			setDiplayResults(true);
+		} else {
+			setDiplayResults(false);
+		}
+	};
+
 	useEffect(() => {
 		document.title = 'VandChat | Chat';
 	}, [userId]);
@@ -75,13 +96,13 @@ const Chat = ({
 				<Row>
 					<Col>
 						<Card>
-							<Table bordered responsive='xs' responsive='sm'>
+							<Table bordered responsive='xs' responsive='sm' className='table'>
 								<tbody>
 									<tr>
-										<td style={{ width: 373 }}>
-											<SearchUser sendDataToParent={getDataFromChild} />
+										<td style={{ width: 373 }} className='hide-column'>
+											<SearchChatUser handleSearchUser={handleSearchUser} />
 										</td>
-										<td>
+										<td className='maximize-width'>
 											<span className='font-weight-bold'>
 												{user !== undefined ? (
 													user.fullName
@@ -115,7 +136,7 @@ const Chat = ({
 										<td
 											rowSpan='2'
 											style={{ width: 373 }}
-											className='chat-container-height'
+											className='chat-container-height hide-column'
 										>
 											<ChatUsers
 												updateComponentOnNewReceivedMessage={messages}
@@ -126,9 +147,12 @@ const Chat = ({
 												playSound={playSound}
 												onlineUser={user}
 												receiverId={userId}
+												sendDataToParent={getData}
+												chatUsers={chatUsers}
+												diplayResults={diplayResults}
 											/>
 										</td>
-										<td className='chat-container-height'>
+										<td className='chat-container-height maximize-width'>
 											<ChatMessages
 												receiverId={userId}
 												messages={messages}
@@ -137,7 +161,7 @@ const Chat = ({
 										</td>
 									</tr>
 									<tr>
-										<td>
+										<td className='maximize-width'>
 											<SendChatMessage
 												receiverId={userId}
 												message={message}

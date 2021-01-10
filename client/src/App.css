@@ -2,13 +2,12 @@ body {
 	background-color: #42423e;
 }
 
-.border-radius {
-	border-radius: 25px 0px;
+.border-left-radius {
+	border-radius: 20px 20px 20px 20px;
 }
 
-.color-users-title {
-	color: #f7f5fa;
-	text-decoration: underline;
+.border-right-radius {
+	border-radius: 20px 20px 20px 20px;
 }
 
 .list-user-card {
@@ -27,4 +26,22 @@ body {
 
 .chat-container-height {
 	height: 490px;
+}
+
+.bg-right {
+	background-color: rgb(86, 142, 151);
+}
+
+.table{
+	background-color: #ebf1ef;
+}
+
+@media screen and (max-width: 760px) {
+	.hide-column {
+		display: none;
+	}
+
+	.maximize-width {
+		width: 100% !important;
+	}
 }

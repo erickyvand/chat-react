@@ -14,6 +14,9 @@ const ChatUsers = ({
 	setCount,
 	count,
 	receiverId,
+	sendDataToParent,
+	chatUsers,
+	diplayResults,
 }) => {
 	const history = useHistory();
 	const [messages, setMessages] = useState([]);
@@ -41,7 +44,7 @@ const ChatUsers = ({
 	const users = usersFilter.filter(
 		user => user.id !== sessionStorage.getItem('id')
 	);
-	console.log(users);
+
 	useEffect(async () => {
 		setLoading(true);
 
@@ -49,6 +52,7 @@ const ChatUsers = ({
 			sessionStorage.getItem('id')
 		);
 		setMessages(response.data.data);
+		sendDataToParent(users);
 
 		setLoading(false);
 	}, [deletedMessage, updateComponentOnNewReceivedMessage]);
@@ -62,6 +66,64 @@ const ChatUsers = ({
 					/>
 				) : users.length === 0 ? (
 					<p className='text-center'>No messages</p>
+				) : diplayResults ? (
+					chatUsers.length === 0 ? (
+						<p className='text-center'>No user found</p>
+					) : (
+						chatUsers.map(user => {
+							if (notification.user === user.id) {
+								return (
+									<ListGroup.Item
+										key={user.id}
+										action
+										onClick={() => handleClickUser(user.id)}
+										className='bg-info text-white font-weight-bold'
+									>
+										<Row>
+											<Col md={10}>{user.fullName}</Col>
+											<Col>
+												<Badge variant='light'>{count}</Badge>
+											</Col>
+										</Row>
+									</ListGroup.Item>
+								);
+							} else if (user.id === receiverId) {
+								return (
+									<ListGroup.Item
+										key={user.id}
+										action
+										onClick={() => handleClickUser(user.id)}
+										className='bg-light font-weight-bold'
+									>
+										{user.fullName}
+									</ListGroup.Item>
+								);
+							} else {
+								return (
+									<ListGroup.Item
+										key={user.id}
+										action
+										onClick={() => handleClickUser(user.id)}
+									>
+										{user.fullName}
+										{' - '}
+										{user.socket !== '' ? (
+											<small>
+												<Badge variant='success'>online</Badge>
+											</small>
+										) : (
+											<small className='text-secondary'>
+												{moment(user.updatedAt).calendar({
+													sameDay: `[${moment(user.updatedAt).fromNow()}]`,
+													sameElse: '',
+												})}
+											</small>
+										)}
+									</ListGroup.Item>
+								);
+							}
+						})
+					)
 				) : (
 					users.map(user => {
 						if (notification.user === user.id) {

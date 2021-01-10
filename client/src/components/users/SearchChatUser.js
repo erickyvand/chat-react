@@ -1,16 +1,16 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
 
-const SearchUser = ({ handleSearch }) => {
+const SearchChatUser = ({ handleSearchUser }) => {
 	return (
 		<div>
 			<Form.Control
 				type='text'
 				placeholder='Search a user...'
-				onChange={handleSearch}
+				onChange={handleSearchUser}
 			/>
 		</div>
 	);
 };
 
-export default SearchUser;
+export default SearchChatUser;

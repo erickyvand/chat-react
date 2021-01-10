@@ -41,45 +41,47 @@ const ChatMessages = ({ messages, receiverId }) => {
 
 						if (user !== undefined && message.user === user._id) {
 							return (
-								<Row key={message._id} className='w-75 m-2'>
+								<Row key={message._id} className='m-2'>
 									<Col>
-										<div className='bg-info text-white p-2 border-radius'>
+										<div className='float-left'>
 											<h6 className='color-users-title'>{user.fullName}</h6>
-											<p>{message.message}</p>
+											<p className='bg-right font-weight-bold text-white p-2 border-left-radius'>
+												{message.message} <br />
+												<small className='text-white'>
+													{moment(message.createdAt).calendar({
+														sameDay: `[${moment(message.createdAt).format(
+															'H:mm'
+														)}]`,
+														sameElse: `[${moment(message.createdAt).format(
+															'Do MMMM YYYY'
+														)}]`,
+													})}
+												</small>
+											</p>
 										</div>
-										<small className='text-muted'>
-											{moment(message.createdAt).calendar({
-												sameDay: `[${moment(message.createdAt).format(
-													'H:mm'
-												)}]`,
-												sameElse: `[${moment(message.createdAt).format(
-													'Do MMMM YYYY'
-												)}]`,
-											})}
-										</small>
 									</Col>
 								</Row>
 							);
 						} else {
 							return (
-								<Row key={message._id} className='float-right w-75 m-1'>
+								<Row key={message._id} className='m-1'>
 									<Col>
-										<div className='bg-primary p-2 text-white border-radius'>
-											<h6 className='color-users-title'>
-												{sessionStorage.getItem('fullName')}
-											</h6>
-											<p>{message.message}</p>
+										<div className='float-right'>
+											<h6>{sessionStorage.getItem('fullName')}</h6>
+											<p className='bg-info font-weight-bold border-right-radius p-2 text-white'>
+												{message.message} <br />
+												<small className='text-white'>
+													{moment(message.createdAt).calendar({
+														sameDay: `[${moment(message.createdAt).format(
+															'H:mm'
+														)}]`,
+														sameElse: `[${moment(message.createdAt).format(
+															'Do MMMM YYYY'
+														)}]`,
+													})}
+												</small>
+											</p>
 										</div>
-										<small className='float-right text-muted'>
-											{moment(message.createdAt).calendar({
-												sameDay: `[${moment(message.createdAt).format(
-													'H:mm'
-												)}]`,
-												sameElse: `[${moment(message.createdAt).format(
-													'Do MMMM YYYY'
-												)}]`,
-											})}
-										</small>
 									</Col>
 								</Row>
 							);
